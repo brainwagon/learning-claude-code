@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills — Claude Code: Learning Notes</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: #1a1a1a;
+    background: #fafaf8;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e4e4e0;
+    border-radius: 8px;
+    padding: 3rem 3.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+
+  .breadcrumb {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 1.75rem;
+  }
+
+  .breadcrumb a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    color: #111;
+  }
+
+  .lead {
+    color: #444;
+    margin-bottom: 2.5rem;
+    font-size: 1.05rem;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #e4e4e0;
+    margin: 2.5rem 0;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+    color: #111;
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #222;
+  }
+
+  p {
+    margin-bottom: 1.25rem;
+    color: #333;
+  }
+
+  ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1.25rem;
+    list-style: disc;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+
+  code {
+    background: #f0f0f0;
+    color: #c0392b;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid #e0e0e0;
+    font-family: "SFMono-Regular", "Consolas", "Liberation Mono", "Menlo", monospace;
+    font-size: 0.9em;
+  }
+
+  pre {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    font-family: "SFMono-Regular", "Consolas", "Liberation Mono", "Menlo", monospace;
+    font-size: 0.9em;
+    line-height: 1.55;
+  }
+
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+  }
+
+  pre .kw { color: #569cd6; }
+  pre .str { color: #ce9178; }
+  pre .num { color: #b5cea8; }
+  pre .key { color: #9cdcfe; }
+  pre .cmd { color: #dcdcaa; }
+  pre .comment { color: #6a9955; }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .callout {
+    background: #f0f7ff;
+    border-left: 4px solid #2563eb;
+    padding: 1rem 1.25rem;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 1.25rem;
+  }
+
+  .callout p {
+    margin-bottom: 0;
+    color: #1a3a6e;
+  }
+
+  .callout strong {
+    color: #1a3a6e;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.25rem;
+  }
+
+  thead {
+    background: #f3f3f0;
+  }
+
+  th {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-weight: 700;
+    color: #1a1a1a;
+    border: 1px solid #e4e4e0;
+  }
+
+  td {
+    padding: 0.85rem 1rem;
+    color: #333;
+    border: 1px solid #e4e4e0;
+    vertical-align: top;
+  }
+
+  tbody tr:hover {
+    background: #fafaf8;
+  }
+
+  @media (max-width: 720px) {
+    .container {
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <p class="breadcrumb"><a href="index.html">Claude Code: Learning Notes</a> &rsaquo; Skills</p>
+
+  <h1>Skills</h1>
+  <p class="lead">Skills are specialized tools that extend Claude Code's capabilities beyond basic code editing and bash execution. Each skill is a reusable, invoke-by-name operation that can be triggered from within a session.</p>
+
+  <hr>
+
+  <h2>What Skills Are</h2>
+
+  <p>A skill is a named operation you invoke with <code>/skill-name</code> or via the Skill tool. It's distinct from:</p>
+
+  <ul>
+    <li><strong>Built-in commands</strong> (like <code>/help</code>, <code>/clear</code>) &mdash; hardcoded features of Claude Code</li>
+    <li><strong>Tools</strong> (like Bash, Read, Edit) &mdash; low-level operations Claude can call directly</li>
+    <li><strong>Agents</strong> (subagents) &mdash; isolated Claude instances; skills are synchronous</li>
+  </ul>
+
+  <p>Skills are often <strong>hooks into your environment</strong> — they read settings, modify configuration, run local commands, and feed results back into your session.</p>
+
+  <hr>
+
+  <h2>Available Skills</h2>
+
+  <h3>update-config</h3>
+  <p>Configure Claude Code settings via <code>settings.json</code>. Used for:</p>
+  <ul>
+    <li>Permissions: allow/deny rules, move permissions between scopes</li>
+    <li>Environment variables: <code>set DEBUG=true</code></li>
+    <li>Hook configuration: set up pre/post-tool automation</li>
+    <li>Settings troubleshooting</li>
+  </ul>
+  <p><strong>Invoke:</strong> <code>/update-config</code></p>
+  <p><strong>Example use cases:</strong></p>
+  <ul>
+    <li>&ldquo;allow npm commands&rdquo;</li>
+    <li>&ldquo;move permission to user settings&rdquo;</li>
+    <li>&ldquo;add bq permission to global settings&rdquo;</li>
+    <li>&ldquo;set DEBUG=true&rdquo;</li>
+  </ul>
+
+  <h3>keybindings-help</h3>
+  <p>Customize keyboard shortcuts and rebind keys. Modifies <code>~/.claude/keybindings.json</code>.</p>
+  <p>Used for:</p>
+  <ul>
+    <li>Adding custom key bindings (e.g., <code>Ctrl+K Ctrl+F</code> for format)</li>
+    <li>Rebinding existing keys</li>
+    <li>Chord bindings (multi-key sequences)</li>
+    <li>Viewing current bindings</li>
+  </ul>
+  <p><strong>Invoke:</strong> <code>/keybindings-help</code></p>
+
+  <h3>simplify</h3>
+  <p>Review changed code for quality, reuse, and efficiency. Scans your changes and suggests improvements.</p>
+  <p>Used for:</p>
+  <ul>
+    <li>Code review of your edits</li>
+    <li>Finding duplicate logic</li>
+    <li>Identifying inefficiencies</li>
+    <li>Quality and style checks</li>
+  </ul>
+  <p><strong>Invoke:</strong> <code>/simplify</code></p>
+
+  <h3>fewer-permission-prompts</h3>
+  <p>Reduce permission prompts by scanning your transcript for common read-only operations and adding an allowlist to <code>settings.json</code>.</p>
+  <p><strong>Invoke:</strong> <code>/fewer-permission-prompts</code></p>
+  <p>Scans your command history, identifies safe operations (like Read, Grep, Bash with certain patterns), and suggests a prioritized allowlist. This lets you approve common operations once and avoid re-prompting.</p>
+
+  <h3>loop</h3>
+  <p>Run a prompt or slash command on a recurring interval. Self-paces when no interval is specified.</p>
+  <p><strong>Invoke:</strong> <code>/loop [interval] &lt;prompt&gt;</code> or <code>/loop &lt;prompt&gt;</code> (self-paced)</p>
+  <p><strong>Example:</strong></p>
+  <pre><code><span class="cmd">/loop 5m check git status</span>
+<span class="cmd">/loop 30s run the tests</span>
+<span class="cmd">/loop every 10 minutes verify the deploy</span></code></pre>
+
+  <h3>schedule</h3>
+  <p>Create, update, list, or run scheduled remote agents (triggers) that execute on a cron schedule.</p>
+  <p>Used for:</p>
+  <ul>
+    <li>Persistent automated tasks: &ldquo;run this job every Tuesday at 9am&rdquo;</li>
+    <li>Recurring agents: &ldquo;check PRs every hour&rdquo;</li>
+    <li>Cron job management: create, list, update, delete schedules</li>
+  </ul>
+
+  <h3>claude-api</h3>
+  <p>Build, debug, and optimize Claude API / Anthropic SDK apps. Handles:</p>
+  <ul>
+    <li>Building new API integrations</li>
+    <li>Debugging existing API code</li>
+    <li>Optimizing with prompt caching</li>
+    <li>Model migrations (upgrading between Claude versions)</li>
+  </ul>
+  <p><strong>Auto-triggers when:</strong></p>
+  <ul>
+    <li>You write/modify code importing <code>anthropic</code> or <code>@anthropic-ai/sdk</code></li>
+    <li>You ask about Claude API, Anthropic SDK, or Managed Agents</li>
+    <li>You add/tune Claude features (caching, thinking, tool use, batch, files)</li>
+  </ul>
+
+  <h3>frontend-design</h3>
+  <p>Create distinctive, production-grade frontend interfaces. Generates creative, polished web UI without generic AI aesthetics.</p>
+  <p><strong>Auto-triggers when:</strong></p>
+  <ul>
+    <li>You ask to build web components, pages, dashboards, or applications</li>
+    <li>You request styling/beautification of web UI</li>
+    <li>Examples: websites, landing pages, React components, HTML/CSS layouts</li>
+  </ul>
+
+  <h3>project-wiki</h3>
+  <p>Build and maintain a persistent auto-updating knowledge base for your codebase (Karpathy-style wiki).</p>
+  <p><strong>Auto-triggers when:</strong></p>
+  <ul>
+    <li>You modify project files (code, configs, docs)</li>
+    <li>You add new modules or refactor architecture</li>
+    <li>You ask about project architecture (&ldquo;how does auth work&rdquo;, &ldquo;where is X implemented&rdquo;)</li>
+    <li>You request documentation health checks</li>
+  </ul>
+
+  <h3>wiki</h3>
+  <p>Build and maintain a persistent Karpathy Wiki &mdash; a knowledge base for external sources and research.</p>
+  <p><strong>Auto-triggers when:</strong></p>
+  <ul>
+    <li>You add sources to a <code>raw/</code> directory (articles, papers, notes)</li>
+    <li>You ask synthesis questions (&ldquo;what do we know about X&rdquo;, &ldquo;compare A and B&rdquo;)</li>
+    <li>You ask to add content (&ldquo;ingest this&rdquo;, &ldquo;add to wiki&rdquo;)</li>
+  </ul>
+  <p><strong>Note:</strong> Distinct from <code>project-wiki</code> &mdash; for external knowledge, not project code.</p>
+
+  <h3>init</h3>
+  <p>Initialize a new <code>CLAUDE.md</code> file with codebase documentation.</p>
+  <p><strong>Invoke:</strong> <code>/init</code></p>
+
+  <h3>review</h3>
+  <p>Review a pull request.</p>
+  <p><strong>Invoke:</strong> <code>/review</code></p>
+
+  <h3>security-review</h3>
+  <p>Complete a security review of pending changes on the current branch.</p>
+  <p><strong>Invoke:</strong> <code>/security-review</code></p>
+
+  <hr>
+
+  <h2>How to Invoke Skills</h2>
+
+  <p>Skills are invoked in two ways:</p>
+
+  <h3>Direct slash command (most common)</h3>
+
+  <pre><code><span class="cmd">/skill-name</span></code></pre>
+
+  <p>Example: <code>/update-config</code> or <code>/simplify</code></p>
+
+  <h3>Via the Skill tool (programmatic)</h3>
+
+  <p>If using Claude Code in a script or custom agent:</p>
+
+  <pre><code><span class="cmd">Skill</span>(<span class="str">"skill-name"</span>, args=<span class="str">"optional arguments"</span>)</code></pre>
+
+  <hr>
+
+  <h2>Skill Availability</h2>
+
+  <p>Not all skills are always available. Skills can be:</p>
+
+  <ul>
+    <li><strong>Always available</strong> (core skills): <code>update-config</code>, <code>keybindings-help</code>, <code>simplify</code>, <code>loop</code>, <code>init</code>, <code>review</code></li>
+    <li><strong>Conditional</strong> (auto-trigger when context matches): <code>claude-api</code>, <code>frontend-design</code>, <code>project-wiki</code>, <code>wiki</code></li>
+    <li><strong>Situational</strong> (specific to your configuration): custom skills defined in <code>.claude/settings.json</code></li>
+  </ul>
+
+  <p>To see available skills in your session:</p>
+
+  <pre><code><span class="cmd">/help</span></code></pre>
+
+  <p>This shows active skills and built-in commands. If a skill is missing, it may be disabled in settings or not applicable to the current context.</p>
+
+  <hr>
+
+  <h2>Tips</h2>
+
+  <div class="callout">
+    <p><strong>Skill vs. Tool:</strong> A skill is high-level and often interactive (asks questions, gives options). A tool is low-level and deterministic. Use skills for configuration or review; use tools for direct, programmatic operations.</p>
+  </div>
+
+  <div class="callout">
+    <p><strong>Skill vs. Agent:</strong> Skills are synchronous and run in the current session. Agents are parallel, isolated Claude instances. Use skills for interactive configuration; use agents for long-running, parallel work.</p>
+  </div>
+
+  <div class="callout">
+    <p><strong>Permission prompts:</strong> Skills that modify your system (like <code>update-config</code>) may trigger permission prompts. These are expected and safe — built-in safeguards. Use <code>/fewer-permission-prompts</code> to reduce friction if needed.</p>
+  </div>
+
+  <p><strong>Skill discovery:</strong> Check <code>/help</code> regularly as new skills are added to Claude Code. Your installed version may have skills not documented here yet.</p>
+
+</div>
+</body>
+</html>

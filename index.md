@@ -16,6 +16,7 @@ These are concise, opinionated reference notes on Claude Code features — writt
 - **`tasks-and-subagents`** — [Tasks and Subagents](tasks-and-subagents.md): persistent work tracking with Tasks, parallel isolated Claude instances with Subagents, and how they combine into a managed workflow.
 - **`git-worktrees`** — [Git Worktrees](git-worktrees.md): running agents in isolated git worktrees, automatic cleanup behavior, and best practices for sandboxed edits.
 - **`billing`** — [Billing and Account Types](billing.md): Claude.ai Pro vs. raw API, which is right for you, how to check your auth status, and how to monitor usage.
+- **`skills`** — [Skills](skills.md): named operations that extend Claude Code (update-config, keybindings-help, simplify, loop, schedule, and auto-triggered skills).
 - **`hooks`** — coming soon: pre/post-tool hooks, settings.json hook configuration, and setting up automated behaviors.
 - **`mcp-servers`** — coming soon: what MCP servers are, configuring them, and the built-in vs. custom server landscape.
 - **`memory-system`** — coming soon: the file-based memory system, memory types, and maintaining a personal knowledge base across sessions.
@@ -30,6 +31,7 @@ These are concise, opinionated reference notes on Claude Code features — writt
 | `tasks-and-subagents` | TaskCreate/Update/Get/Stop; subagent types; isolation; background execution |
 | `git-worktrees` | Worktree mechanics; isolation parameter; cleanup behavior; shell commands |
 | `billing` | Claude.ai Pro vs. API; auth status; usage monitoring; console access |
+| `skills` | update-config, keybindings-help, simplify, loop, schedule; auto-triggered skills; invocation |
 | `hooks` | Planned — hook events, configuration, automation patterns |
 | `mcp-servers` | Planned — server setup, built-in servers, custom server development |
 | `memory-system` | Planned — memory types, MEMORY.md index, file structure |
