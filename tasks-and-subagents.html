@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code: Tasks and Subagents</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: #1a1a1a;
+    background: #fafaf8;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e4e4e0;
+    border-radius: 8px;
+    padding: 3rem 3.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+
+  h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    color: #111;
+  }
+
+  .lead {
+    color: #444;
+    margin-bottom: 2.5rem;
+    font-size: 1.05rem;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #e4e4e0;
+    margin: 2.5rem 0;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #111;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  strong { color: #111; }
+
+  ol, ul {
+    margin: 0.75rem 0 1rem 1.5rem;
+    color: #333;
+  }
+
+  li { margin-bottom: 0.45rem; }
+
+  code {
+    font-family: "SFMono-Regular", "Consolas", "Liberation Mono", "Menlo", monospace;
+    font-size: 0.875em;
+    background: #f3f3f0;
+    border: 1px solid #e4e4e0;
+    border-radius: 3px;
+    padding: 0.1em 0.35em;
+    color: #c0392b;
+  }
+
+  pre {
+    background: #1e1e1e;
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto;
+    margin: 1rem 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  pre code {
+    font-size: 0.85rem;
+    background: none;
+    border: none;
+    padding: 0;
+    color: #d4d4d4;
+  }
+
+  .comment { color: #6a9955; }
+  .keyword { color: #569cd6; }
+  .string  { color: #ce9178; }
+  .fname   { color: #dcdcaa; }
+  .param   { color: #9cdcfe; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  thead tr {
+    background: #f3f3f0;
+    border-bottom: 2px solid #e4e4e0;
+  }
+
+  th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    color: #111;
+  }
+
+  td {
+    padding: 0.55rem 1rem;
+    border-bottom: 1px solid #eeeeea;
+    color: #333;
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafaf8; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>Claude Code: Tasks and Subagents</h1>
+  <p class="lead">Claude Code can handle complex, multi-file work without losing track of where it is. Tasks give Claude a persistent work ledger visible across tool calls; Subagents let you spawn isolated Claude instances for parallelism, clean context, or specialized roles. Together they transform a single-shot prompt into something closer to a managed development workflow.</p>
+
+  <hr>
+
+  <h2>Tasks</h2>
+
+  <p>A Task is a tracked work unit &mdash; think of it as a sticky note Claude can read back at any point during a long session. Unlike a mental note buried in the conversation, a Task persists, has a status, and can carry structured output.</p>
+
+  <p><strong>When to create one</strong>: any time work has more than two discrete steps, might span multiple tool calls, or needs a clear definition of done. Refactoring a module, implementing a feature end-to-end, writing a test suite &mdash; these warrant tasks. Answering a quick question does not.</p>
+
+  <p><strong>Creating and updating</strong>:</p>
+
+  <pre><code><span class="fname">TaskCreate</span>(
+  <span class="param">title</span>=<span class="string">"Add JWT refresh token support"</span>,
+  <span class="param">description</span>=<span class="string">"Implement refresh token issuance in auth/token.py, add rotation logic, update tests in tests/test_auth.py"</span>,
+  <span class="param">acceptance_criteria</span>=<span class="string">"All existing auth tests pass; new refresh token tests cover issuance, rotation, and expiry"</span>
+)</code></pre>
+
+  <p>During work, call <code>TaskUpdate</code> to record progress and keep the status accurate:</p>
+
+  <pre><code><span class="fname">TaskUpdate</span>(<span class="param">task_id</span>=<span class="string">"abc123"</span>, <span class="param">status</span>=<span class="string">"in_progress"</span>, <span class="param">notes</span>=<span class="string">"Issued token logic done; starting rotation"</span>)
+<span class="fname">TaskUpdate</span>(<span class="param">task_id</span>=<span class="string">"abc123"</span>, <span class="param">status</span>=<span class="string">"completed"</span>)</code></pre>
+
+  <p>Use <code>TaskGet</code> to re-read a task's current state mid-session, and <code>TaskList</code> to see everything in flight. If a task gets pre-empted, <code>TaskStop</code> marks it cleanly rather than leaving it dangling.</p>
+
+  <p><strong>Why this matters</strong>: without tasks, Claude's working state lives only in the conversation context. As that context grows, earlier intent gets diluted. A task externalizes the goal &mdash; Claude can check <code>TaskGet</code> at any point and know exactly what "done" looks like without re-reading the entire thread. For you, it also creates a clear audit trail of what was attempted and why.</p>
+
+  <hr>
+
+  <h2>Subagents</h2>
+
+  <p>Subagents are independent Claude instances. They start with no knowledge of the parent conversation, which is both a constraint and a feature.</p>
+
+  <p><strong>Three reasons to reach for them</strong>:</p>
+
+  <ol>
+    <li><strong>Parallelism</strong> &mdash; run multiple investigations simultaneously instead of sequentially. Exploring how three different subsystems handle error propagation is three separate reads; there is no reason to do them one at a time.</li>
+    <li><strong>Context protection</strong> &mdash; a subagent that goes deep into a rabbit hole (reading 40 files, fetching docs) does not pollute the parent context. The parent gets a summary; the noise stays isolated.</li>
+    <li><strong>Specialization</strong> &mdash; some agent types have restricted tool sets that prevent accidents. A <code>Plan</code> agent cannot write files, so you get a design doc without risk of premature edits.</li>
+  </ol>
+
+  <p><strong>Agent types and when to use each</strong>:</p>
+
+  <pre><code><span class="comment"># Fast codebase search — no write access, very cheap</span>
+<span class="fname">Agent</span>(<span class="param">subagent_type</span>=<span class="string">"Explore"</span>, <span class="param">prompt</span>=<span class="string">"Find all uses of the legacy Config struct and map which files will need changes"</span>)
+
+<span class="comment"># Full-capability research or multi-step task</span>
+<span class="fname">Agent</span>(<span class="param">subagent_type</span>=<span class="string">"general-purpose"</span>, <span class="param">prompt</span>=<span class="string">"Research the best approach for connection pooling in asyncpg, then draft an implementation plan"</span>)
+
+<span class="comment"># Design without risk of modifying files</span>
+<span class="fname">Agent</span>(<span class="param">subagent_type</span>=<span class="string">"Plan"</span>, <span class="param">prompt</span>=<span class="string">"Design the migration path from callbacks to async/await in src/networking/, including file-by-file sequencing"</span>)</code></pre>
+
+  <p><strong>Foreground vs. background</strong>: foreground agents block and return results inline. Background agents (<code>run_in_background=True</code>) fire and continue &mdash; use them when you want work happening in parallel while you proceed with something else.</p>
+
+  <pre><code><span class="fname">Agent</span>(<span class="param">subagent_type</span>=<span class="string">"Explore"</span>, <span class="param">prompt</span>=<span class="string">"Audit test coverage gaps in src/parser/"</span>, <span class="param">run_in_background</span>=<span class="keyword">True</span>)</code></pre>
+
+  <p><strong>Worktree isolation</strong>: when a subagent will make actual file changes, <code>isolation="worktree"</code> gives it a separate git worktree. Changes are sandboxed until you decide to merge. Essential when running multiple agents that touch overlapping parts of the codebase.</p>
+
+  <pre><code><span class="fname">Agent</span>(<span class="param">subagent_type</span>=<span class="string">"general-purpose"</span>, <span class="param">prompt</span>=<span class="string">"Implement the new caching layer per the design doc"</span>, <span class="param">isolation</span>=<span class="string">"worktree"</span>)</code></pre>
+
+  <hr>
+
+  <h2>Combining Them: A Real Scenario</h2>
+
+  <p>You need to add WebSocket support to an existing HTTP service. Here is how tasks and subagents work together:</p>
+
+  <pre><code><span class="fname">TaskCreate</span>(<span class="param">title</span>=<span class="string">"Add WebSocket support"</span>, <span class="param">description</span>=<span class="string">"..."</span>, <span class="param">acceptance_criteria</span>=<span class="string">"Integration tests pass for WS upgrade path"</span>)</code></pre>
+
+  <p>Then fire parallel exploration agents while the task tracks the overall goal:</p>
+
+  <pre><code><span class="fname">Agent</span>(<span class="param">subagent_type</span>=<span class="string">"Explore"</span>, <span class="param">prompt</span>=<span class="string">"Map current HTTP handler structure in src/server/"</span>, <span class="param">run_in_background</span>=<span class="keyword">True</span>)
+<span class="fname">Agent</span>(<span class="param">subagent_type</span>=<span class="string">"Explore"</span>, <span class="param">prompt</span>=<span class="string">"Find all integration test fixtures relevant to connection handling"</span>, <span class="param">run_in_background</span>=<span class="keyword">True</span>)</code></pre>
+
+  <p>Once you have the map, a <code>Plan</code> agent designs the approach without touching files. You review, then a <code>general-purpose</code> agent with <code>isolation="worktree"</code> does the implementation. When it's done, you merge the worktree and call <code>TaskUpdate(status="completed")</code>.</p>
+
+  <p>The task kept the goal crisp across all those context switches. The subagents kept the parent context clean and the exploration parallel.</p>
+
+  <hr>
+
+  <h2>Quick Reference</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tool / Parameter</th>
+        <th>Use it when</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>TaskCreate</code></td><td>Work has &gt;2 steps or needs explicit acceptance criteria</td></tr>
+      <tr><td><code>TaskUpdate</code></td><td>Status changes, or you want to record progress notes</td></tr>
+      <tr><td><code>TaskGet</code> / <code>TaskList</code></td><td>Re-orienting mid-session or reviewing all open work</td></tr>
+      <tr><td><code>TaskStop</code></td><td>Pre-empting a task cleanly before it completes</td></tr>
+      <tr><td><code>subagent_type="Explore"</code></td><td>Read-only codebase mapping; fastest, cheapest</td></tr>
+      <tr><td><code>subagent_type="Plan"</code></td><td>Design work that must not write files</td></tr>
+      <tr><td><code>subagent_type="general-purpose"</code></td><td>Multi-step tasks that need full tool access</td></tr>
+      <tr><td><code>run_in_background=True</code></td><td>Parallel work you do not need to block on</td></tr>
+      <tr><td><code>isolation="worktree"</code></td><td>Any subagent that will write files</td></tr>
+      <tr><td><code>model="opus"</code></td><td>Tasks requiring stronger reasoning; slower and more expensive</td></tr>
+      <tr><td><code>model="haiku"</code></td><td>Fast, cheap subtasks where output quality is less critical</td></tr>
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>
