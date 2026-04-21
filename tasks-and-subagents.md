@@ -64,7 +64,7 @@ Agent(subagent_type="Plan", prompt="Design the migration path from callbacks to 
 Agent(subagent_type="Explore", prompt="Audit test coverage gaps in src/parser/", run_in_background=True)
 ```
 
-**Worktree isolation**: when a subagent will make actual file changes, `isolation="worktree"` gives it a separate git worktree. Changes are sandboxed until you decide to merge. Essential when running multiple agents that touch overlapping parts of the codebase.
+**Worktree isolation**: when a subagent will make actual file changes, `isolation="worktree"` gives it a separate git worktree. Changes are sandboxed until you decide to merge. Essential when running multiple agents that touch overlapping parts of the codebase — see [git-worktrees](git-worktrees.md) for full coverage.
 
 ```
 Agent(subagent_type="general-purpose", prompt="Implement the new caching layer per the design doc", isolation="worktree")

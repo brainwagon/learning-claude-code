@@ -191,7 +191,7 @@
 
   <pre><code><span class="fname">Agent</span>(<span class="param">subagent_type</span>=<span class="string">"Explore"</span>, <span class="param">prompt</span>=<span class="string">"Audit test coverage gaps in src/parser/"</span>, <span class="param">run_in_background</span>=<span class="keyword">True</span>)</code></pre>
 
-  <p><strong>Worktree isolation</strong>: when a subagent will make actual file changes, <code>isolation="worktree"</code> gives it a separate git worktree. Changes are sandboxed until you decide to merge. Essential when running multiple agents that touch overlapping parts of the codebase.</p>
+  <p><strong>Worktree isolation</strong>: when a subagent will make actual file changes, <code>isolation="worktree"</code> gives it a separate git worktree. Changes are sandboxed until you decide to merge. Essential when running multiple agents that touch overlapping parts of the codebase &mdash; see <a href="git-worktrees.html"><code>git-worktrees</code></a> for full coverage.</p>
 
   <pre><code><span class="fname">Agent</span>(<span class="param">subagent_type</span>=<span class="string">"general-purpose"</span>, <span class="param">prompt</span>=<span class="string">"Implement the new caching layer per the design doc"</span>, <span class="param">isolation</span>=<span class="string">"worktree"</span>)</code></pre>
 

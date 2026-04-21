@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billing and Account Types — Claude Code: Learning Notes</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: #1a1a1a;
+    background: #fafaf8;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e4e4e0;
+    border-radius: 8px;
+    padding: 3rem 3.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+
+  .breadcrumb {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 1.75rem;
+  }
+
+  .breadcrumb a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    color: #111;
+  }
+
+  .lead {
+    color: #444;
+    margin-bottom: 2.5rem;
+    font-size: 1.05rem;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #e4e4e0;
+    margin: 2.5rem 0;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+    color: #111;
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #222;
+  }
+
+  p {
+    margin-bottom: 1.25rem;
+    color: #333;
+  }
+
+  ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1.25rem;
+    list-style: disc;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+
+  code {
+    background: #f0f0f0;
+    color: #c0392b;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid #e0e0e0;
+    font-family: "SFMono-Regular", "Consolas", "Liberation Mono", "Menlo", monospace;
+    font-size: 0.9em;
+  }
+
+  pre {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    font-family: "SFMono-Regular", "Consolas", "Liberation Mono", "Menlo", monospace;
+    font-size: 0.9em;
+    line-height: 1.55;
+  }
+
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+  }
+
+  pre .kw { color: #569cd6; }
+  pre .str { color: #ce9178; }
+  pre .num { color: #b5cea8; }
+  pre .key { color: #9cdcfe; }
+  pre .cmd { color: #dcdcaa; }
+  pre .comment { color: #6a9955; }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .callout {
+    background: #f0f7ff;
+    border-left: 4px solid #2563eb;
+    padding: 1rem 1.25rem;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 1.25rem;
+  }
+
+  .callout p {
+    margin-bottom: 0;
+    color: #1a3a6e;
+  }
+
+  .callout strong {
+    color: #1a3a6e;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.25rem;
+  }
+
+  thead {
+    background: #f3f3f0;
+  }
+
+  th {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-weight: 700;
+    color: #1a1a1a;
+    border: 1px solid #e4e4e0;
+  }
+
+  td {
+    padding: 0.85rem 1rem;
+    color: #333;
+    border: 1px solid #e4e4e0;
+    vertical-align: top;
+  }
+
+  tbody tr:hover {
+    background: #fafaf8;
+  }
+
+  @media (max-width: 720px) {
+    .container {
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <p class="breadcrumb"><a href="index.html">Claude Code: Learning Notes</a> &rsaquo; Billing and Account Types</p>
+
+  <h1>Billing and Account Types</h1>
+  <p class="lead">A practical guide to understanding Claude billing options &mdash; what each tier includes, how to check your status, and which is right for a recreational programmer on a budget.</p>
+
+  <hr>
+
+  <h2>Account Types</h2>
+
+  <h3>Claude.ai Pro ($20/month flat fee)</h3>
+  <ul>
+    <li>Fixed, predictable monthly cost</li>
+    <li>Access via web chat, mobile app, and the Claude Code CLI</li>
+    <li>High but not unlimited message/rate limits</li>
+    <li>No API key or coding required to use</li>
+    <li>Usage monitoring is minimal &mdash; since it&rsquo;s flat-fee, Anthropic doesn&rsquo;t expose granular stats</li>
+    <li>Managed at <strong>claude.ai</strong> in your account settings</li>
+  </ul>
+
+  <h3>Anthropic API (pay-per-token)</h3>
+  <ul>
+    <li>No flat fee &mdash; you pay based on tokens consumed (input + output text)</li>
+    <li>Can be very cheap for light use, or expensive for heavy/looping scripts</li>
+    <li>Requires coding to use: you write scripts or apps that call the API directly</li>
+    <li>Full usage dashboard available at <code>console.anthropic.com</code></li>
+    <li>Best for: building apps others use, large batch automation, programmatic integrations</li>
+  </ul>
+
+  <hr>
+
+  <h2>Comparison at a Glance</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Claude.ai Pro</th>
+        <th>Anthropic API</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Cost model</strong></td>
+        <td>$20/month flat</td>
+        <td>Pay-per-token</td>
+      </tr>
+      <tr>
+        <td><strong>Predictability</strong></td>
+        <td>Fixed</td>
+        <td>Variable (can spike)</td>
+      </tr>
+      <tr>
+        <td><strong>Covers Claude Code</strong></td>
+        <td>Yes</td>
+        <td>Yes (with key)</td>
+      </tr>
+      <tr>
+        <td><strong>Usage dashboard</strong></td>
+        <td>Minimal</td>
+        <td>Full (console.anthropic.com)</td>
+      </tr>
+      <tr>
+        <td><strong>Requires coding</strong></td>
+        <td>No</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Risk of surprise bill</strong></td>
+        <td>None</td>
+        <td>Yes (runaway scripts)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>Which Is Right for You?</h2>
+
+  <div class="callout">
+    <p>For a <strong>recreational programmer on a limited budget</strong>, Claude.ai Pro is almost always the right choice. Predictable cost, no risk of runaway charges, and it covers Claude Code out of the box.</p>
+  </div>
+
+  <p>The raw API is worth considering only if you&rsquo;re building apps that other people use, or running large batch jobs where pay-per-token would be cheaper than $20/month. A buggy script with a raw API key can generate unexpected charges fast.</p>
+
+  <hr>
+
+  <h2>Checking Your Auth Status</h2>
+
+  <p>To confirm which account type Claude Code is using, run this in the Claude Code prompt:</p>
+
+  <pre><code><span class="cmd">! claude auth status</span></code></pre>
+
+  <p>A Claude.ai Pro account looks like:</p>
+
+  <pre><code>{
+  <span class="key">"loggedIn"</span>: <span class="kw">true</span>,
+  <span class="key">"authMethod"</span>: <span class="str">"claude.ai"</span>,
+  <span class="key">"apiProvider"</span>: <span class="str">"firstParty"</span>,
+  <span class="key">"subscriptionType"</span>: <span class="str">"pro"</span>
+}</code></pre>
+
+  <p>A raw API key setup would show <code>"authMethod": "apiKey"</code> instead.</p>
+
+  <hr>
+
+  <h2>Monitoring Usage</h2>
+
+  <p><strong>Claude.ai Pro:</strong> No detailed usage dashboard. The main constraint is rate limits &mdash; if you hit one, Claude Code will tell you and you wait before sending more. Within Claude Code you can inspect the current session:</p>
+
+  <ul>
+    <li><code>/context</code> &mdash; shows how much of the current conversation&rsquo;s context window is consumed</li>
+    <li><code>/status</code> &mdash; shows active model and connection state</li>
+  </ul>
+
+  <p><strong>Raw API:</strong> Full token-level usage stats available at <code>console.anthropic.com</code>. Each API response also returns per-call token counts in <code>response.usage</code>.</p>
+
+  <hr>
+
+  <h2>Key Distinction</h2>
+
+  <p><code>console.anthropic.com</code> is for <strong>raw API accounts only</strong>. If your <code>claude auth status</code> shows <code>"authMethod": "claude.ai"</code>, you don&rsquo;t have (and don&rsquo;t need) a console account &mdash; your billing is managed entirely through claude.ai.</p>
+</div>
+</body>
+</html>
